@@ -4,51 +4,54 @@ class Program
 {
     static void Main()
     {
-        // Задание 1
-        DrawSquare(5, '*');
+        int[] array = { 1, 2, 3, 4, 5, 5, 6, 7, 8, 9 };
+        int evenCount = array.Count(x => x % 2 == 0);
+        int oddCount = array.Count(x => x % 2 != 0);
+        int uniqueCount = array.Distinct().Count();
+        Console.WriteLine($"Чётные: {evenCount}, Нечётные: {oddCount}, Уникальные: {uniqueCount}");
 
-        // Задание 2
-        Console.WriteLine(IsPalindrome(1221)); // true
-        Console.WriteLine(IsPalindrome(3443)); // true
-        Console.WriteLine(IsPalindrome(7854)); // false
+    //Задание 2
+        int[] array = { 3, 5, 7, 2, 4, 6, 8 };
+            int userInput = int.Parse(Console.ReadLine());
+            int count = array.Count(x => x < userInput);
+            Console.WriteLine($"Количество значений меньше {userInput}: {count}");
 
-        // Задание 3
-        int[] originalArray = { 1, 2, 6, -1, 88, 7, 6 };
-        int[] filterArray = { 6, 88, 7 };
-        int[] result = FilterArray(originalArray, filterArray);
-        Console.WriteLine(string.Join(" ", result)); // 1 2 -1
-    }
+    // Задание 3
+        int[] array = { 7, 6, 5, 3, 4, 7, 6, 5, 8, 7, 6, 5 };
+            int[] userInput = { 7, 6, 5 };
+            int sequenceCount = Enumerable.Range(0, array.Length - userInput.Length + 1).Count(i => array.Skip(i).Take(userInput.Length).SequenceEqual(userInput));
+            Console.WriteLine($"Количество повторений последовательности: {sequenceCount}");
 
-    // Метод для рисования квадрата заданного символа
-    static void DrawSquare(int sideLength, char symbol)
-    {
-        for (int i = 0; i < sideLength; i++)
-        {
-            for (int j = 0; j < sideLength; j++)
-            {
-                Console.Write(symbol + " ");
-            }
-            Console.WriteLine();
+    // Задание 4
+        int[] array1 = { 1, 2, 3, 4 };
+            int[] array2 = { 3, 4, 5, 6 };
+            var commonElements = array1.Intersect(array2).ToArray();
+            Console.WriteLine($"Общие элементы без повторений: {string.Join(", ", commonElements)}");
+
+    // Задание 5=
+        int[,] array = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+            int min = array.Cast<int>().Min();
+            int max = array.Cast<int>().Max();
+            Console.WriteLine($"Минимальное значение: {min}, Максимальное значение: {max}");
+
+    // Задание 6
+    string sentence = Console.ReadLine();
+            int wordCount = sentence.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
+            Console.WriteLine($"Количество слов в предложении: {wordCount}");
+
+    // Задание 7
+        string sentence = Console.ReadLine();
+            string reversedSentence = string.Join(" ", sentence.Split(' ').Select(word => new string(word.Reverse().ToArray())));
+            Console.WriteLine($"После переворота: {reversedSentence}");
+    // Задание 8
+        string sentence = Console.ReadLine();
+            int vowelCount = sentence.Count(c => "aeiouAEIOU".Contains(c));
+            Console.WriteLine($"Количество гласных букв: {vowelCount}");
+
+    // Задание 9
+        string originalString = "Why she had to go. I don't know, she wouldn't say";
+            string substringToSearch = "she";
+            int occurrences = originalString.Split(new string[] { substringToSearch }, StringSplitOptions.None).Length - 1;
+            Console.WriteLine($"Результат поиска: {occurrences}");
         }
-    }
-
-    // Метод для проверки числа на палиндром
-    static bool IsPalindrome(int number)
-    {
-        string numString = number.ToString();
-        for (int i = 0; i < numString.Length / 2; i++)
-        {
-            if (numString[i] != numString[numString.Length - 1 - i])
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Метод для фильтрации массива на основе другого массива
-    static int[] FilterArray(int[] originalArray, int[] filterArray)
-    {
-        return originalArray.Where(num => !filterArray.Contains(num)).ToArray();
-    }
 }
