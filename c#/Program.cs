@@ -1,21 +1,83 @@
 ﻿using System;
 
+class Human
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    public void Introduce()
+    {
+        Console.WriteLine($"Привет, меня зовут {Name} и мне {Age} лет.");
+    }
+}
+
+class Builder : Human
+{
+    public string Specialization { get; set; }
+
+    public void Build()
+    {
+        Console.WriteLine($"Я строитель по специализации {Specialization}.");
+    }
+}
+
+class Sailor : Human
+{
+    public string ShipName { get; set; }
+
+    public void Sail()
+    {
+        Console.WriteLine($"Я моряк на корабле {ShipName}.");
+    }
+}
+
+class Pilot : Human
+{
+    public string AircraftModel { get; set; }
+
+    public void Fly()
+    {
+        Console.WriteLine($"Я летчик на самолете {AircraftModel}.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Builder builder = new Builder { Name = "Иван", Age = 35, Specialization = "строитель высотных зданий" };
+        builder.Introduce();
+        builder.Build();
+
+        Sailor sailor = new Sailor { Name = "Петр", Age = 40, ShipName = "Ласточка" };
+        sailor.Introduce();
+        sailor.Sail();
+
+        Pilot pilot = new Pilot { Name = "Алексей", Age = 30, AircraftModel = "Boeing 737" };
+        pilot.Introduce();
+        pilot.Fly();
+    }
+}
+
 class Passport
 {
-    public string PassportNumber { get; set; }
     public string FullName { get; set; }
-    public DateTime DateOfIssue { get; set; }
+    public string PassportNumber { get; set; }
 
-    public Passport(string passportNumber, string fullName, DateTime dateOfIssue)
+    public void DisplayInfo()
     {
-        if (string.IsNullOrWhiteSpace(passportNumber) || string.IsNullOrWhiteSpace(fullName) || dateOfIssue == DateTime.MinValue)
-        {
-            throw new ArgumentException("Неверные данные для инициализации паспорта.");
-        }
+        Console.WriteLine($"Паспорт: {PassportNumber}, ФИО: {FullName}");
+    }
+}
 
-        PassportNumber = passportNumber;
-        FullName = fullName;
-        DateOfIssue = dateOfIssue;
+class ForeignPassport : Passport
+{
+    public string Country { get; set; }
+    public string VisaInfo { get; set; }
+
+    public void DisplayForeignInfo()
+    {
+        Console.WriteLine($"Заграничный паспорт: {PassportNumber}, ФИО: {FullName}, Страна: {Country}, Виза: {VisaInfo}");
     }
 }
 
@@ -23,97 +85,10 @@ class Program
 {
     static void Main()
     {
-        try
-        {
-            Passport passport = new Passport("123456789", "Иванов Иван Иванович", new DateTime(2021, 12, 15));
-            Console.WriteLine("Паспорт успешно создан.");
-        }
-        catch (ArgumentException ex)
-        {
-            Console.WriteLine("Ошибка при создании паспорта: " + ex.Message);
-        }
-    }
-}
+        Passport passport = new Passport { FullName = "Иванов Иван Иванович", PassportNumber = "123456789" };
+        passport.DisplayInfo();
 
-class Program
-{
-    static void Main()
-    {
-        Console.WriteLine("Выберите направление перевода:");
-        Console.WriteLine("1. Из десятичной в двоичную");
-        Console.WriteLine("2. Из двоичной в десятичную");
-
-        int choice;
-        while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > 2)
-        {
-            Console.WriteLine("Некорректный ввод. Попробуйте снова.");
-        }
-
-        switch (choice)
-        {
-            case 1:
-                Console.WriteLine("Введите число в десятичной системе:");
-                if (int.TryParse(Console.ReadLine(), out int decimalNumber))
-                {
-                    string binaryNumber = Convert.ToString(decimalNumber, 2);
-                    Console.WriteLine($"Число {decimalNumber} в двоичной системе: {binaryNumber}");
-                }
-                else
-                {
-                    Console.WriteLine("Ошибка! Некорректный ввод числа.");
-                }
-                break;
-            case 2:
-                Console.WriteLine("Введите число в двоичной системе:");
-                string binaryInput = Console.ReadLine();
-                if (int.TryParse(binaryInput, System.Globalization.NumberStyles.AllowBinarySpecifier, null, out int result))
-                {
-                    Console.WriteLine($"Число {binaryInput} в десятичной системе: {result}");
-                }
-                else
-                {
-                    Console.WriteLine("Ошибка! Некорректный ввод числа в двоичной системе.");
-                }
-                break;
-        }
-        Console.WriteLine("Введите слово от zero до nine:");
-        string inputWord = Console.ReadLine().ToLower();
-
-        switch (inputWord)
-        {
-            case "zero":
-                Console.WriteLine("0");
-                break;
-            case "one":
-                Console.WriteLine("1");
-                break;
-            case "two":
-                Console.WriteLine("2");
-                break;
-            case "three":
-                Console.WriteLine("3");
-                break;
-            case "four":
-                Console.WriteLine("4");
-                break;
-            case "five":
-                Console.WriteLine("5");
-                break;
-            case "six":
-                Console.WriteLine("6");
-                break;
-            case "seven":
-                Console.WriteLine("7");
-                break;
-            case "eight":
-                Console.WriteLine("8");
-                break;
-            case "nine":
-                Console.WriteLine("9");
-                break;
-            default:
-                Console.WriteLine("Некорректное слово. Введите слово от zero до nine.");
-                break;
-        }
+        ForeignPassport foreignPassport = new ForeignPassport { FullName = "Smith John", PassportNumber = "987654321", Country = "USA", VisaInfo = "Valid until 2023" };
+        foreignPassport.DisplayForeignInfo();
     }
 }
