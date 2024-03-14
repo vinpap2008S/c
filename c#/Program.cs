@@ -1,94 +1,108 @@
 ﻿using System;
 
-class Human
+class Животное
 {
-    public string Name { get; set; }
-    public int Age { get; set; }
+    public string Имя { get; set; }
 
-    public void Introduce()
+    public Животное(string имя)
     {
-        Console.WriteLine($"Привет, меня зовут {Name} и мне {Age} лет.");
+        Имя = имя;
     }
 }
 
-class Builder : Human
+class Тигр : Животное
 {
-    public string Specialization { get; set; }
+    public string Раса { get; set; }
 
-    public void Build()
+    public Тигр(string имя, string раса) : base(имя)
     {
-        Console.WriteLine($"Я строитель по специализации {Specialization}.");
+        Раса = раса;
+    }
+
+    public void Охотиться()
+    {
+        Console.WriteLine($"Тигр {Имя} охотится на добычу.");
     }
 }
 
-class Sailor : Human
+class Крокодил : Животное
 {
-    public string ShipName { get; set; }
+    public int ДлинаХвоста { get; set; }
 
-    public void Sail()
+    public Крокодил(string имя, int длинаХвоста) : base(имя)
     {
-        Console.WriteLine($"Я моряк на корабле {ShipName}.");
+        ДлинаХвоста = длинаХвоста;
+    }
+
+    public void Плавать()
+    {
+        Console.WriteLine($"Крокодил {Имя} плавает в воде.");
     }
 }
 
-class Pilot : Human
+class Кенгуру : Животное
 {
-    public string AircraftModel { get; set; }
+    public int ДлинаПрыжка { get; set; }
 
-    public void Fly()
+    public Кенгуру(string имя, int длинаПрыжка) : base(имя)
     {
-        Console.WriteLine($"Я летчик на самолете {AircraftModel}.");
+        ДлинаПрыжка = длинаПрыжка;
     }
-}
 
-class Program
-{
-    static void Main()
+    public void Прыгать()
     {
-        Builder builder = new Builder { Name = "Иван", Age = 35, Specialization = "строитель высотных зданий" };
-        builder.Introduce();
-        builder.Build();
-
-        Sailor sailor = new Sailor { Name = "Петр", Age = 40, ShipName = "Ласточка" };
-        sailor.Introduce();
-        sailor.Sail();
-
-        Pilot pilot = new Pilot { Name = "Алексей", Age = 30, AircraftModel = "Boeing 737" };
-        pilot.Introduce();
-        pilot.Fly();
-    }
-}
-
-class Passport
-{
-    public string FullName { get; set; }
-    public string PassportNumber { get; set; }
-
-    public void DisplayInfo()
-    {
-        Console.WriteLine($"Паспорт: {PassportNumber}, ФИО: {FullName}");
-    }
-}
-
-class ForeignPassport : Passport
-{
-    public string Country { get; set; }
-    public string VisaInfo { get; set; }
-
-    public void DisplayForeignInfo()
-    {
-        Console.WriteLine($"Заграничный паспорт: {PassportNumber}, ФИО: {FullName}, Страна: {Country}, Виза: {VisaInfo}");
+        Console.WriteLine($"Кенгуру {Имя} прыгает на расстояние {ДлинаПрыжка} метров.");
     }
 }
 
 class Program
 {
+    static Func<double, double> КвадратичныйТрехчлен(double a, double b, double c)
+    {
+        return x => a * x * x + b * x + c;
+    }
     static void Main()
     {
-        Passport passport = new Passport { FullName = "Иванов Иван Иванович", PassportNumber = "123456789" };
-        passport.DisplayInfo();
 
-        ForeignPassport foreignPassport = new ForeignPassport { FullName = "Smith John", PassportNumber = "987654321", Country = "USA", VisaInfo = "Valid until 2023" };
-        foreignPassport.DisplayForeignInfo();
+        Тигр тигр = new Тигр("Шерхан", "Бенгальский");
+        тигр.Охотиться();
+
+        Крокодил крокодил = new Крокодил("Гена", 3);
+        крокодил.Плавать();
+
+        Кенгуру кенгуру = new Кенгуру("Кенни", 10);
+        кенгуру.Прыгать();
+        int n = 5;
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= n - i; j++)
+            {
+                Console.Write(" ");
+            }
+            for (int k = 1; k <= 2 * i - 1; k++)
+            {
+                Console.Write("*");
+            }
+            Console.WriteLine();
+        }
+        for (int i = n - 1; i >= 1; i--)
+        {
+            for (int j = 1; j <= n - i; j++)
+            {
+                Console.Write(" ");
+            }
+            for (int k = 1; k <= 2 * i - 1; k++)
+            {
+                Console.Write("*");
+            }
+            Console.WriteLine();
+        }
+        double a = 1, b = 2, c = 3;
+        var функция = КвадратичныйТрехчлен(a, b, c);
+
+        double x = 5;
+        double результат = функция(x);
+
+        Console.WriteLine($"Значение квадратичного трехчлена при x={x}: {результат}");
     }
 }
