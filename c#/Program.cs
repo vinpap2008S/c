@@ -72,7 +72,8 @@ class Program
 
         Кенгуру кенгуру = new Кенгуру("Кенни", 10);
         кенгуру.Прыгать();
-        int n = 5;
+        Console.Write("Введите размер ромба");
+        int n = Console.Read();
         for (int i = 1; i <= n; i++)
         {
             for (int j = 1; j <= n - i; j++)
@@ -103,6 +104,6 @@ class Program
         double x = 5;
         double результат = функция(x);
 
-        Console.WriteLine($"Значение квадратичного трехчлена при x={x}: {результат}");
+        Console.WriteLine($"Значение квадратичного трехчлена при x={x} a={a} b={b} c={c}: {результат}");
     }
 }
