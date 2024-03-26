@@ -1,109 +1,169 @@
 ﻿using System;
+using System.Text;
 
-class Животное
+
+class Город
 {
-    public string Имя { get; set; }
+    private int _количествоЖителей;
 
-    public Животное(string имя)
+    public int КоличествоЖителей
     {
-        Имя = имя;
+        get { return _количествоЖителей; }
+        set { _количествоЖителей = value; }
+    }
+
+    public static Город operator +(Город город, int прирост)
+    {
+        город.КоличествоЖителей += прирост;
+        return город;
+    }
+
+    public static Город operator -(Город город, int убыль)
+    {
+        город.КоличествоЖителей -= убыль;
+        return город;
+    }
+
+    public static bool operator ==(Город город1, Город город2)
+    {
+        return город1.КоличествоЖителей == город2.КоличествоЖителей;
+    }
+
+    public static bool operator !=(Город город1, Город город2)
+    {
+        return !(город1 == город2);
+    }
+
+    public static bool operator <(Город город1, Город город2)
+    {
+        return город1.КоличествоЖителей < город2.КоличествоЖителей;
+    }
+
+    public static bool operator >(Город город1, Город город2)
+    {
+        return город1.КоличествоЖителей > город2.КоличествоЖителей;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+            return false;
+
+        Город other = (Город)obj;
+        return this.КоличествоЖителей == other.КоличествоЖителей;
     }
 }
 
-class Тигр : Животное
-{
-    public string Раса { get; set; }
 
-    public Тигр(string имя, string раса) : base(имя)
+class МузыкальныйИнструмент
+{
+    protected string название;
+
+    public МузыкальныйИнструмент(string название)
     {
-        Раса = раса;
+        this.название = название;
     }
 
-    public void Охотиться()
+    public virtual void Sound()
     {
-        Console.WriteLine($"Тигр {Имя} охотится на добычу.");
+        Console.WriteLine("Звук музыкального инструмента");
+    }
+
+    public void Show()
+    {
+        Console.WriteLine($"Название: {название}");
+    }
+
+    public virtual void Desc()
+    {
+        Console.WriteLine("Описание музыкального инструмента");
+    }
+
+    public virtual void History()
+    {
+        Console.WriteLine("История создания музыкального инструмента");
     }
 }
 
-class Крокодил : Животное
+class Скрипка : МузыкальныйИнструмент
 {
-    public int ДлинаХвоста { get; set; }
+    public Скрипка(string название) : base(название) { }
 
-    public Крокодил(string имя, int длинаХвоста) : base(имя)
+    public override void Sound()
     {
-        ДлинаХвоста = длинаХвоста;
-    }
-
-    public void Плавать()
-    {
-        Console.WriteLine($"Крокодил {Имя} плавает в воде.");
+        Console.WriteLine("Звук скрипки");
     }
 }
 
-class Кенгуру : Животное
+class Тромбон : МузыкальныйИнструмент
 {
-    public int ДлинаПрыжка { get; set; }
+    public Тромбон(string название) : base(название) { }
 
-    public Кенгуру(string имя, int длинаПрыжка) : base(имя)
+    public override void Sound()
     {
-        ДлинаПрыжка = длинаПрыжка;
-    }
-
-    public void Прыгать()
-    {
-        Console.WriteLine($"Кенгуру {Имя} прыгает на расстояние {ДлинаПрыжка} метров.");
+        Console.WriteLine("Звук тромбона");
     }
 }
+
+class Укулеле : МузыкальныйИнструмент
+{
+    public Укулеле(string название) : base(название) { }
+
+    public override void Sound()
+    {
+        Console.WriteLine("Звук укулеле");
+    }
+}
+
+class Виолончель : МузыкальныйИнструмент
+{
+    public Виолончель(string название) : base(название) { }
+
+    public override void Sound()
+    {
+        Console.WriteLine("Звук виолончели");
+    }
+}
+
 
 class Program
 {
-    static Func<double, double> КвадратичныйТрехчлен(double a, double b, double c)
-    {
-        return x => a * x * x + b * x + c;
-    }
     static void Main()
     {
 
-        Тигр тигр = new Тигр("Шерхан", "Бенгальский");
-        тигр.Охотиться();
-
-        Крокодил крокодил = new Крокодил("Гена", 3);
-        крокодил.Плавать();
-
-        Кенгуру кенгуру = new Кенгуру("Кенни", 10);
-        кенгуру.Прыгать();
-        Console.Write("Введите размер ромба");
-        int n = Console.Read();
-        for (int i = 1; i <= n; i++)
+        Dictionary<char, string> morseCode = new Dictionary<char, string>()
         {
-            for (int j = 1; j <= n - i; j++)
-            {
-                Console.Write(" ");
-            }
-            for (int k = 1; k <= 2 * i - 1; k++)
-            {
-                Console.Write("*");
-            }
-            Console.WriteLine();
-        }
-        for (int i = n - 1; i >= 1; i--)
+            {'A', ".-"}, {'B', "-..."}, {'C', "-.-."}, {'D', "-.."}, {'E', "."}, {'F', "..-."},
+            {'G', "--."}, {'H', "...."}, {'I', ".."}, {'J', ".---"}, {'K', "-.-"}, {'L', ".-.."},
+            {'M', "--"}, {'N', "-."}, {'O', "---"}, {'P', ".--."}, {'Q', "--.-"}, {'R', ".-."},
+            {'S', "..."}, {'T', "-"}, {'U', "..-"}, {'V', "...-"}, {'W', ".--"}, {'X', "-..-"},
+            {'Y', "-.--"}, {'Z', "--.."}
+        };
+
+        // Функция для перевода текста в азбуку Морзе
+        string ToMorseCode(string text)
         {
-            for (int j = 1; j <= n - i; j++)
+            StringBuilder result = new StringBuilder();
+
+            foreach (char c in text.ToUpper())
             {
-                Console.Write(" ");
+                if (morseCode.ContainsKey(c))
+                {
+                    result.Append(morseCode[c] + " ");
+                }
+                else if (c == ' ')
+                {
+                    result.Append("/ ");
+                }
             }
-            for (int k = 1; k <= 2 * i - 1; k++)
-            {
-                Console.Write("*");
-            }
-            Console.WriteLine();
+
+            return result.ToString();
         }
-        double a = 1, b = 2, c = 3;
-        var функция = КвадратичныйТрехчлен(a, b, c);
 
-        double x = 5;
-        double результат = функция(x);
+        // Пример использования функции
+        string userInput = "Hello World";
+        string morseText = ToMorseCode(userInput);
+        Console.WriteLine(morseText); // Выведет текст, переведенный в азбуку Морзе
 
-        Console.WriteLine($"Значение квадратичного трехчлена при x={x} a={a} b={b} c={c}: {результат}");
     }
 }
