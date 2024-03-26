@@ -1,169 +1,84 @@
 ﻿using System;
-using System.Text;
+using System;
 
-
-class Город
+namespace ГенераторТекста
 {
-    private int _количествоЖителей;
-
-    public int КоличествоЖителей
+    class Программа
     {
-        get { return _количествоЖителей; }
-        set { _количествоЖителей = value; }
-    }
-
-    public static Город operator +(Город город, int прирост)
-    {
-        город.КоличествоЖителей += прирост;
-        return город;
-    }
-
-    public static Город operator -(Город город, int убыль)
-    {
-        город.КоличествоЖителей -= убыль;
-        return город;
-    }
-
-    public static bool operator ==(Город город1, Город город2)
-    {
-        return город1.КоличествоЖителей == город2.КоличествоЖителей;
-    }
-
-    public static bool operator !=(Город город1, Город город2)
-    {
-        return !(город1 == город2);
-    }
-
-    public static bool operator <(Город город1, Город город2)
-    {
-        return город1.КоличествоЖителей < город2.КоличествоЖителей;
-    }
-
-    public static bool operator >(Город город1, Город город2)
-    {
-        return город1.КоличествоЖителей > город2.КоличествоЖителей;
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj == null || GetType() != obj.GetType())
-            return false;
-
-        Город other = (Город)obj;
-        return this.КоличествоЖителей == other.КоличествоЖителей;
-    }
-}
-
-
-class МузыкальныйИнструмент
-{
-    protected string название;
-
-    public МузыкальныйИнструмент(string название)
-    {
-        this.название = название;
-    }
-
-    public virtual void Sound()
-    {
-        Console.WriteLine("Звук музыкального инструмента");
-    }
-
-    public void Show()
-    {
-        Console.WriteLine($"Название: {название}");
-    }
-
-    public virtual void Desc()
-    {
-        Console.WriteLine("Описание музыкального инструмента");
-    }
-
-    public virtual void History()
-    {
-        Console.WriteLine("История создания музыкального инструмента");
-    }
-}
-
-class Скрипка : МузыкальныйИнструмент
-{
-    public Скрипка(string название) : base(название) { }
-
-    public override void Sound()
-    {
-        Console.WriteLine("Звук скрипки");
-    }
-}
-
-class Тромбон : МузыкальныйИнструмент
-{
-    public Тромбон(string название) : base(название) { }
-
-    public override void Sound()
-    {
-        Console.WriteLine("Звук тромбона");
-    }
-}
-
-class Укулеле : МузыкальныйИнструмент
-{
-    public Укулеле(string название) : base(название) { }
-
-    public override void Sound()
-    {
-        Console.WriteLine("Звук укулеле");
-    }
-}
-
-class Виолончель : МузыкальныйИнструмент
-{
-    public Виолончель(string название) : base(название) { }
-
-    public override void Sound()
-    {
-        Console.WriteLine("Звук виолончели");
-    }
-}
-
-
-class Program
-{
-    static void Main()
-    {
-
-        Dictionary<char, string> morseCode = new Dictionary<char, string>()
+        static void Main(string[] args)
         {
-            {'A', ".-"}, {'B', "-..."}, {'C', "-.-."}, {'D', "-.."}, {'E', "."}, {'F', "..-."},
-            {'G', "--."}, {'H', "...."}, {'I', ".."}, {'J', ".---"}, {'K', "-.-"}, {'L', ".-.."},
-            {'M', "--"}, {'N', "-."}, {'O', "---"}, {'P', ".--."}, {'Q', "--.-"}, {'R', ".-."},
-            {'S', "..."}, {'T', "-"}, {'U', "..-"}, {'V', "...-"}, {'W', ".--"}, {'X', "-..-"},
-            {'Y', "-.--"}, {'Z', "--.."}
-        };
+            Console.WriteLine("Введите количество гласных:");
+            int количествоГласных = Convert.ToInt32(Console.ReadLine());
 
-        // Функция для перевода текста в азбуку Морзе
-        string ToMorseCode(string text)
+            Console.WriteLine("Введите количество согласных:");
+            int количествоСогласных = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Введите максимальную длину слова:");
+            int максДлинаСлова = Convert.ToInt32(Console.ReadLine());
+
+            ГенераторТекста.СгенерироватьТекст(количествоГласных, количествоСогласных, максДлинаСлова);
+        }
+    }
+
+    class ГенераторТекста
+    {
+        public static void СгенерироватьТекст(int количествоГласных, int количествоСогласных, int максДлинаСлова)
         {
-            StringBuilder result = new StringBuilder();
+            Random rand = new Random();
+            string гласные = "aeiou";
+            string согласные = "bcdfghjklmnpqrstvwxyz";
+            string текст = "";
 
-            foreach (char c in text.ToUpper())
+            for (int i = 0; i < количествоГласных + количествоСогласных; i++)
             {
-                if (morseCode.ContainsKey(c))
+                if (i % 2 == 0 && количествоГласных > 0)
                 {
-                    result.Append(morseCode[c] + " ");
+                    текст += гласные[rand.Next(гласные.Length)];
+                    количествоГласных--;
                 }
-                else if (c == ' ')
+                else if (количествоСогласных > 0)
                 {
-                    result.Append("/ ");
+                    текст += согласные[rand.Next(согласные.Length)];
+                    количествоСогласных--;
+                }
+
+                if (текст.Length >= максДлинаСлова || (количествоГласных == 0 && количествоСогласных == 0))
+                {
+                    Console.Write(текст + " ");
+                    текст = "";
                 }
             }
-
-            return result.ToString();
         }
+    }
+}
 
-        // Пример использования функции
-        string userInput = "Hello World";
-        string morseText = ToMorseCode(userInput);
-        Console.WriteLine(morseText); // Выведет текст, переведенный в азбуку Морзе
+namespace Игра
+{
+    class УгадайЧисло
+    {
+        public static void НачатьИгру(int минЗначение, int максЗначение)
+        {
+            Random rand = new Random();
+            int загаданноеЧисло = rand.Next(минЗначение, максЗначение + 1);
+            int предполагаемоеЧисло = 0;
 
+            Console.WriteLine($"Загадано число от {минЗначение} до {максЗначение}. Попробуйте угадать!");
+
+            do
+            {
+                предполагаемоеЧисло = Convert.ToInt32(Console.ReadLine());
+
+                if (предполагаемоеЧисло < загаданноеЧисло)
+                {
+                    Console.WriteLine("Загаданное число больше. Попробуйте еще раз.");
+                }
+                else if (предполагаемоеЧисло > загаданноеЧисло)
+                {
+                    Console.WriteLine("Загаданное число меньше. Попробуйте еще раз.");
+                }
+            } while (предполагаемоеЧисло != загаданноеЧисло);
+
+            Console.WriteLine("Поздравляем! Вы угадали число!");
+        }
     }
 }
