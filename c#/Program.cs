@@ -1,107 +1,102 @@
-﻿abstract class Storage
+﻿using System;
+
+public abstract class Shape
 {
-    private string название;
-    private string модель;
+    public ConsoleColor Color { get; set; }
+    public int Size { get; set; }
 
-    public string Название { get => название; set => название = value; }
-    public string Модель { get => модель; set => модель = value; }
-
-    public abstract double ПолучитьОбъемПамяти();
-    public abstract void КопироватьДанные();
-    public abstract double ПолучитьСвободныйОбъемПамяти();
-    public abstract void ПолучитьИнформацию();
+    public abstract void Draw(int x, int y);
 }
-class Flash : Storage
+public class Triangle : Shape
 {
-    private double скоростьUSB3;
-    private double объемПамяти;
-
-    public double СкоростьUSB3 { get => скоростьUSB3; set => скоростьUSB3 = value; }
-    public double ОбъемПамяти { get => объемПамяти; set => объемПамяти = value; }
-
-    public override double ПолучитьОбъемПамяти()
+    public override void Draw(int x, int y)
     {
-        return объемПамяти;
-    }
-
-    public override void КопироватьДанные()
-    {
-        // реализация копирования данных на Flash-память
-    }
-
-    public override double ПолучитьСвободныйОбъемПамяти()
-    {
-        // реализация получения свободного объема памяти
-        return 0;
-    }
-
-    public override void ПолучитьИнформацию()
-    {
-        // реализация получения информации о Flash-памяти
+        Console.ForegroundColor = Color;
+        for (int i = 0; i < Size; i++)
+        {
+            for (int j = 0; j <= i; j++)
+            {
+                Console.Write("*");
+            }
+            Console.WriteLine();
+        }
     }
 }
-class DVD : Storage
+
+public class Circle : Shape
 {
-    private double скоростьЧтенияЗаписи;
-    private string тип;
-
-    public double СкоростьЧтенияЗаписи { get => скоростьЧтенияЗаписи; set => скоростьЧтенияЗаписи = value; }
-    public string Тип { get => тип; set => тип = value; }
-
-    public override double ПолучитьОбъемПамяти()
+    public override void Draw(int x, int y)
     {
-        if (тип == "односторонний")
-            return 4.7;
-        else if (тип == "двусторонний")
-            return 9;
-        else
-            return 0;
-    }
-
-    public override void КопироватьДанные()
-    {
-        // реализация копирования данных на DVD-диск
-    }
-
-    public override double ПолучитьСвободныйОбъемПамяти()
-    {
-        // реализация получения свободного объема памяти
-        return 0;
-    }
-
-    public override void ПолучитьИнформацию()
-    {
-        // реализация получения информации о DVD-диске
+        Console.ForegroundColor = Color;
+        for (int i = 0; i < Size; i++)
+        {
+            for (int j = 0; j < Size; j++)
+            {
+                if (Math.Sqrt((i - Size / 2) * (i - Size / 2) + (j - Size / 2) * (j - Size / 2)) <= Size / 2)
+                {
+                    Console.Write("*");
+                }
+                else
+                {
+                    Console.Write(" ");
+                }
+            }
+            Console.WriteLine();
+        }
     }
 }
-class HDD : Storage
+public class Rectangle : Shape
 {
-    private double скоростьUSB2;
-    private int количествоРазделов;
-    private double объемРазделов;
-
-    public double СкоростьUSB2 { get => скоростьUSB2; set => скоростьUSB2 = value; }
-    public int КоличествоРазделов { get => количествоРазделов; set => количествоРазделов = value; }
-    public double ОбъемРазделов { get => объемРазделов; set => объемРазделов = value; }
-
-    public override double ПолучитьОбъемПамяти()
+    public override void Draw(int x, int y)
     {
-        return количествоРазделов * объемРазделов;
+        Console.ForegroundColor = Color;
+        for (int i = 0; i < Size; i++)
+        {
+            for (int j = 0; j < Size * 2; j++)
+            {
+                Console.Write("*");
+            }
+            Console.WriteLine();
+        }
+    }
+}
+
+
+
+
+public class ShapeCollection
+{
+    private List<Shape> shapes = new List<Shape>();
+
+    public void AddShape(Shape shape)
+    {
+        shapes.Add(shape);
     }
 
-    public override void КопироватьДанные()
+    public void DrawAllShapes()
     {
-        // реализация копирования данных на съемный HDD
+        foreach (var shape in shapes)
+        {
+            shape.Draw(0, 0);
+        }
     }
+}
 
-    public override double ПолучитьСвободныйОбъемПамяти()
+class Program
+{
+    static void Main()
     {
-        // реализация получения свободного объема памяти
-        return 0;
-    }
+        ShapeCollection collection = new ShapeCollection();
 
-    public override void ПолучитьИнформацию()
-    {
-        // реализация получения информации о съемном HDD
+        Rectangle rectangle = new Rectangle { Color = ConsoleColor.Yellow, Size = 5 };
+        collection.AddShape(rectangle);
+
+        Triangle triangle = new Triangle { Color = ConsoleColor.Green, Size = 5 };
+        collection.AddShape(triangle);
+
+        Circle circle = new Circle { Color = ConsoleColor.Red, Size = 100 };
+        collection.AddShape(circle);
+
+        collection.DrawAllShapes();
     }
 }
