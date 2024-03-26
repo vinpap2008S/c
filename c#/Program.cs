@@ -1,84 +1,107 @@
-﻿using System;
-using System;
-
-namespace ГенераторТекста
+﻿abstract class Storage
 {
-    class Программа
+    private string название;
+    private string модель;
+
+    public string Название { get => название; set => название = value; }
+    public string Модель { get => модель; set => модель = value; }
+
+    public abstract double ПолучитьОбъемПамяти();
+    public abstract void КопироватьДанные();
+    public abstract double ПолучитьСвободныйОбъемПамяти();
+    public abstract void ПолучитьИнформацию();
+}
+class Flash : Storage
+{
+    private double скоростьUSB3;
+    private double объемПамяти;
+
+    public double СкоростьUSB3 { get => скоростьUSB3; set => скоростьUSB3 = value; }
+    public double ОбъемПамяти { get => объемПамяти; set => объемПамяти = value; }
+
+    public override double ПолучитьОбъемПамяти()
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Введите количество гласных:");
-            int количествоГласных = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine("Введите количество согласных:");
-            int количествоСогласных = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine("Введите максимальную длину слова:");
-            int максДлинаСлова = Convert.ToInt32(Console.ReadLine());
-
-            ГенераторТекста.СгенерироватьТекст(количествоГласных, количествоСогласных, максДлинаСлова);
-        }
+        return объемПамяти;
     }
 
-    class ГенераторТекста
+    public override void КопироватьДанные()
     {
-        public static void СгенерироватьТекст(int количествоГласных, int количествоСогласных, int максДлинаСлова)
-        {
-            Random rand = new Random();
-            string гласные = "aeiou";
-            string согласные = "bcdfghjklmnpqrstvwxyz";
-            string текст = "";
+        // реализация копирования данных на Flash-память
+    }
 
-            for (int i = 0; i < количествоГласных + количествоСогласных; i++)
-            {
-                if (i % 2 == 0 && количествоГласных > 0)
-                {
-                    текст += гласные[rand.Next(гласные.Length)];
-                    количествоГласных--;
-                }
-                else if (количествоСогласных > 0)
-                {
-                    текст += согласные[rand.Next(согласные.Length)];
-                    количествоСогласных--;
-                }
+    public override double ПолучитьСвободныйОбъемПамяти()
+    {
+        // реализация получения свободного объема памяти
+        return 0;
+    }
 
-                if (текст.Length >= максДлинаСлова || (количествоГласных == 0 && количествоСогласных == 0))
-                {
-                    Console.Write(текст + " ");
-                    текст = "";
-                }
-            }
-        }
+    public override void ПолучитьИнформацию()
+    {
+        // реализация получения информации о Flash-памяти
     }
 }
-
-namespace Игра
+class DVD : Storage
 {
-    class УгадайЧисло
+    private double скоростьЧтенияЗаписи;
+    private string тип;
+
+    public double СкоростьЧтенияЗаписи { get => скоростьЧтенияЗаписи; set => скоростьЧтенияЗаписи = value; }
+    public string Тип { get => тип; set => тип = value; }
+
+    public override double ПолучитьОбъемПамяти()
     {
-        public static void НачатьИгру(int минЗначение, int максЗначение)
-        {
-            Random rand = new Random();
-            int загаданноеЧисло = rand.Next(минЗначение, максЗначение + 1);
-            int предполагаемоеЧисло = 0;
+        if (тип == "односторонний")
+            return 4.7;
+        else if (тип == "двусторонний")
+            return 9;
+        else
+            return 0;
+    }
 
-            Console.WriteLine($"Загадано число от {минЗначение} до {максЗначение}. Попробуйте угадать!");
+    public override void КопироватьДанные()
+    {
+        // реализация копирования данных на DVD-диск
+    }
 
-            do
-            {
-                предполагаемоеЧисло = Convert.ToInt32(Console.ReadLine());
+    public override double ПолучитьСвободныйОбъемПамяти()
+    {
+        // реализация получения свободного объема памяти
+        return 0;
+    }
 
-                if (предполагаемоеЧисло < загаданноеЧисло)
-                {
-                    Console.WriteLine("Загаданное число больше. Попробуйте еще раз.");
-                }
-                else if (предполагаемоеЧисло > загаданноеЧисло)
-                {
-                    Console.WriteLine("Загаданное число меньше. Попробуйте еще раз.");
-                }
-            } while (предполагаемоеЧисло != загаданноеЧисло);
+    public override void ПолучитьИнформацию()
+    {
+        // реализация получения информации о DVD-диске
+    }
+}
+class HDD : Storage
+{
+    private double скоростьUSB2;
+    private int количествоРазделов;
+    private double объемРазделов;
 
-            Console.WriteLine("Поздравляем! Вы угадали число!");
-        }
+    public double СкоростьUSB2 { get => скоростьUSB2; set => скоростьUSB2 = value; }
+    public int КоличествоРазделов { get => количествоРазделов; set => количествоРазделов = value; }
+    public double ОбъемРазделов { get => объемРазделов; set => объемРазделов = value; }
+
+    public override double ПолучитьОбъемПамяти()
+    {
+        return количествоРазделов * объемРазделов;
+    }
+
+    public override void КопироватьДанные()
+    {
+        // реализация копирования данных на съемный HDD
+    }
+
+    public override double ПолучитьСвободныйОбъемПамяти()
+    {
+        // реализация получения свободного объема памяти
+        return 0;
+    }
+
+    public override void ПолучитьИнформацию()
+    {
+        // реализация получения информации о съемном HDD
     }
 }
