@@ -1,102 +1,254 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
-public abstract class Shape
+
+abstract class Издание
 {
-    public ConsoleColor Color { get; set; }
-    public int Size { get; set; }
+    public string Название { get; set; }
+    public string ФамилияАвтора { get; set; }
 
-    public abstract void Draw(int x, int y);
+    public abstract void ПоказатьИнформацию();
+    public abstract bool ПроверитьИскомое(string искомаяФамилия);
 }
-public class Triangle : Shape
+
+class Книга : Издание
 {
-    public override void Draw(int x, int y)
+    public int ГодИздания { get; set; }
+    public string Издательство { get; set; }
+
+    public override void ПоказатьИнформацию()
     {
-        Console.ForegroundColor = Color;
-        for (int i = 0; i < Size; i++)
+        Console.WriteLine($"Книга: {Название}, Автор: {ФамилияАвтора}, Год издания: {ГодИздания}, Издательство: {Издательство}");
+    }
+
+    public override bool ПроверитьИскомое(string искомаяФамилия)
+    {
+        return ФамилияАвтора == искомаяФамилия;
+    }
+}
+
+class Статья : Издание
+{
+    public string НазваниеЖурнала { get; set; }
+    public int НомерЖурнала { get; set; }
+    public int ГодИздания { get; set; }
+
+    public override void ПоказатьИнформацию()
+    {
+        Console.WriteLine($"Статья: {Название}, Автор: {ФамилияАвтора}, Журнал: {НазваниеЖурнала}, Номер: {НомерЖурнала}, Год издания: {ГодИздания}");
+    }
+
+    public override bool ПроверитьИскомое(string искомаяФамилия)
+    {
+        return ФамилияАвтора == искомаяФамилия;
+    }
+}
+
+class ЭлектронныйРесурс : Издание
+{
+    public string Ссылка { get; set; }
+    public string Аннотация { get; set; }
+
+    public override void ПоказатьИнформацию()
+    {
+        Console.WriteLine($"Электронный ресурс: {Название}, Автор: {ФамилияАвтора}, Ссылка: {Ссылка}, Аннотация: {Аннотация}");
+    }
+
+    public override bool ПроверитьИскомое(string искомаяФамилия)
+    {
+        return ФамилияАвтора == искомаяФамилия;
+    }
+}
+
+abstract class BaseArray
+{
+    protected int[] array;
+
+    public BaseArray(int size)
+    {
+        array = new int[size];
+    }
+
+    public int Size => array.Length;
+
+    public abstract void DisplayArray();
+
+    public int this[int index]
+    {
+        get { return array[index]; }
+        set { array[index] = value; }
+    }
+}
+
+class DerivedArray : BaseArray
+{
+    public DerivedArray(int size) : base(size)
+    {
+    }
+
+    public override void DisplayArray()
+    {
+        Console.Write("Array elements: ");
+        foreach (var element in array)
         {
-            for (int j = 0; j <= i; j++)
-            {
-                Console.Write("*");
-            }
-            Console.WriteLine();
+            Console.Write(element + " ");
         }
+        Console.WriteLine();
     }
 }
 
-public class Circle : Shape
+using System;
+using System.Collections.Generic;
+
+abstract class Figure : IComparable<Figure>
 {
-    public override void Draw(int x, int y)
+    public abstract double CalculateArea();
+    public abstract double CalculatePerimeter();
+    public abstract void DisplayInfo();
+
+    public int CompareTo(Figure other)
     {
-        Console.ForegroundColor = Color;
-        for (int i = 0; i < Size; i++)
-        {
-            for (int j = 0; j < Size; j++)
-            {
-                if (Math.Sqrt((i - Size / 2) * (i - Size / 2) + (j - Size / 2) * (j - Size / 2)) <= Size / 2)
-                {
-                    Console.Write("*");
-                }
-                else
-                {
-                    Console.Write(" ");
-                }
-            }
-            Console.WriteLine();
-        }
+        return this.CalculateArea().CompareTo(other.CalculateArea());
     }
 }
-public class Rectangle : Shape
+
+class Rectangle : Figure
 {
-    public override void Draw(int x, int y)
+    private double width;
+    private double height;
+
+    public Rectangle(double width, double height)
     {
-        Console.ForegroundColor = Color;
-        for (int i = 0; i < Size; i++)
-        {
-            for (int j = 0; j < Size * 2; j++)
-            {
-                Console.Write("*");
-            }
-            Console.WriteLine();
-        }
+        this.width = width;
+        this.height = height;
+    }
+
+    public override double CalculateArea()
+    {
+        return width * height;
+    }
+
+    public override double CalculatePerimeter()
+    {
+        return 2 * (width + height);
+    }
+
+    public override void DisplayInfo()
+    {
+        Console.WriteLine("Rectangle - Width: {0}, Height: {1}, Area: {2}, Perimeter: {3}",
+            width, height, CalculateArea(), CalculatePerimeter());
     }
 }
 
-
-
-
-public class ShapeCollection
+class Circle : Figure
 {
-    private List<Shape> shapes = new List<Shape>();
+    private double radius;
 
-    public void AddShape(Shape shape)
+    public Circle(double radius)
     {
-        shapes.Add(shape);
+        this.radius = radius;
     }
 
-    public void DrawAllShapes()
+    public override double CalculateArea()
     {
-        foreach (var shape in shapes)
-        {
-            shape.Draw(0, 0);
-        }
+        return Math.PI * radius * radius;
+    }
+
+    public override double CalculatePerimeter()
+    {
+        return 2 * Math.PI * radius;
+    }
+
+    public override void DisplayInfo()
+    {
+        Console.WriteLine("Circle - Radius: {0}, Area: {1}, Perimeter: {2}",
+            radius, CalculateArea(), CalculatePerimeter());
     }
 }
 
+class Triangle : Figure
+{
+    private double sideA;
+    private double sideB;
+    private double sideC;
+
+    public Triangle(double sideA, double sideB, double sideC)
+    {
+        this.sideA = sideA;
+        this.sideB = sideB;
+        this.sideC = sideC;
+    }
+
+    public override double CalculateArea()
+    {
+        double p = (sideA + sideB + sideC) / 2;
+        return Math.Sqrt(p * (p - sideA) * (p - sideB) * (p - sideC));
+    }
+
+    public override double CalculatePerimeter()
+    {
+        return sideA + sideB + sideC;
+    }
+
+    public override void DisplayInfo()
+    {
+        Console.WriteLine("Triangle - Side A: {0}, Side B: {1}, Side C: {2}, Area: {3}, Perimeter: {4}",
+            sideA, sideB, sideC, CalculateArea(), CalculatePerimeter());
+    }
+}
 class Program
 {
     static void Main()
     {
-        ShapeCollection collection = new ShapeCollection();
+        Console.Write("1 Задание");
+        Издание[] каталог = {
+            new Книга { Название = "Война и мир", ФамилияАвтора = "Толстой", ГодИздания = 1869, Издательство = "Издательство1" },
+            new Статья { Название = "Название статьи", ФамилияАвтора = "Автор статьи", НазваниеЖурнала = "Журнал1", НомерЖурнала = 1, ГодИздания = 2021 },
+            new ЭлектронныйРесурс { Название = "Название ресурса", ФамилияАвтора = "Автор ресурса", Ссылка = "ссылка1", Аннотация = "Аннотация1" }
+        };
 
-        Rectangle rectangle = new Rectangle { Color = ConsoleColor.Yellow, Size = 5 };
-        collection.AddShape(rectangle);
+        foreach (var издание in каталог)
+        {
+            издание.ПоказатьИнформацию();
+        }
 
-        Triangle triangle = new Triangle { Color = ConsoleColor.Green, Size = 5 };
-        collection.AddShape(triangle);
+        string искомаяФамилия = "Толстой";
+        foreach (var издание in каталог)
+        {
+            if (издание.ПроверитьИскомое(искомаяФамилия))
+            {
+                Console.WriteLine($"Издание найдено: {издание.Название}");
+            }
+        }
+        Console.Write("2 Задание");
+        DerivedArray derivedArray = new DerivedArray(5);
 
-        Circle circle = new Circle { Color = ConsoleColor.Red, Size = 100 };
-        collection.AddShape(circle);
+        for (int i = 0; i < derivedArray.Size; i++)
+        {
+            derivedArray[i] = i * 10;
+        }
 
-        collection.DrawAllShapes();
+        derivedArray.DisplayArray();
+
+
+        Console.WriteLine("Element at index 2: " + derivedArray[2]);
+        derivedArray[2] = 100;
+        Console.WriteLine("Element at index 2 after update: " + derivedArray[2]);
+        Console.Write("3 Задание");
+        List<Figure> figures = new List<Figure>
+        {
+            new Rectangle(5, 10),
+            new Circle(3),
+            new Triangle(3, 4, 5)
+        };
+
+        figures.Sort();
+
+        foreach (var figure in figures)
+        {
+            figure.DisplayInfo();
+        }
     }
 }
+
