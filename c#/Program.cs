@@ -1,81 +1,124 @@
-﻿// Задание № 1
-using System;
-using System.Collections.Generic;
-
-class Translator
+﻿using System;
+// Задание № 1
+class GenericArray<T>
 {
-    private Dictionary<string, string> engToRus = new Dictionary<string, string>();
-    private Dictionary<string, string> rusToEng = new Dictionary<string, string>();
+    private T[] array;
 
-    public void AddTranslation(string eng, string rus)
+    public GenericArray(int size)
     {
-        engToRus[eng] = rus;
-        rusToEng[rus] = eng;
+        array = new T[size];
     }
 
-    public string Translate(string word, bool isEngToRus)
+    public void AddElement(int index, T element)
     {
-        if (isEngToRus && engToRus.ContainsKey(word))
+        if (index >= 0 && index < array.Length)
         {
-            return engToRus[word];
+            array[index] = element;
         }
-        else if (!isEngToRus && rusToEng.ContainsKey(word))
+    }
+
+    public void RemoveElement(int index)
+    {
+        if (index >= 0 && index < array.Length)
         {
-            return rusToEng[word];
+            array[index] = default(T);
         }
-        return "Translation not found";
+    }
+
+    public T GetElement(int index)
+    {
+        if (index >= 0 && index < array.Length)
+        {
+            return array[index];
+        }
+        return default(T);
+    }
+
+    public int GetLength()
+    {
+        return array.Length;
     }
 }
 
 // Задание № 2
-class Point2D<T>
+using System;
+
+abstract class BaseClass
 {
-    public T X { get; set; }
-    public T Y { get; set; }
+    protected int field1;
+    protected int field2;
 
-    public Point2D(T x, T y)
+    public BaseClass(int f1, int f2)
     {
-        X = x;
-        Y = y;
+        field1 = f1;
+        field2 = f2;
     }
 
-    public override string ToString()
-    {
-        return $"({X}, {Y})";
-    }
+    public abstract int this[int index] { get; }
+
 }
 
-class Point3D : Point2D<int>
+interface IMyInterface
 {
-    public int Z { get; set; }
+    int MyMethod(int arg);
+}
 
-    public Point3D(int x, int y, int z) : base(x, y)
+class DerivedClass : BaseClass, IMyInterface
+{
+    public DerivedClass(int f1, int f2) : base(f1, f2)
     {
-        Z = z;
+    }
+
+    public override int this[int index]
+    {
+        get
+        {
+            if (index % 2 == 0)
+            {
+                return field1;
+            }
+            else
+            {
+                return field2;
+            }
+        }
+    }
+
+    public int MyMethod(int arg)
+    {
+        return (field1 + field2) * arg;
     }
 }
 
 // Задание № 3
-class Line<T>
+
+using System;
+using System.Collections.Generic;
+
+enum Position
 {
-    private Point2D<T> point1;
-    private Point2D<T> point2;
+    Student,
+    Teacher,
+    DepartmentHead,
+    Staff
+}
 
-    public Line(Point2D<T> p1, Point2D<T> p2)
-    {
-        point1 = p1;
-        point2 = p2;
-    }
+class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public Position Position { get; set; }
 
-    public Line(T x1, T y1, T x2, T y2)
+    public Person(string name, int age, Position position)
     {
-        point1 = new Point2D<T>(x1, y1);
-        point2 = new Point2D<T>(x2, y2);
+        Name = name;
+        Age = age;
+        Position = position;
     }
 
     public override string ToString()
     {
-        return $"Line from {point1} to {point2}";
+        return $"Name: {Name}, Age: {Age}, Position: {Position}";
     }
 }
 
@@ -84,19 +127,26 @@ class Program
     static void Main()
     {
         // Задание № 1
-        Translator translator = new Translator();
-        translator.AddTranslation("Russia", "Россия");
-        translator.AddTranslation("USA", "США");
-
-        Console.WriteLine(translator.Translate("Russia", true));
-        Console.WriteLine(translator.Translate("США", false));
+        GenericArray<int> intArray = new GenericArray<int>(5);
+        intArray.AddElement(0, 10);
+        intArray.AddElement(1, 20);
+        Console.WriteLine(intArray.GetElement(0));
+        Console.WriteLine(intArray.GetLength());
 
         // Задание № 2
-        Point3D point3D = new Point3D(1, 2, 3);
-        Console.WriteLine(point3D);
+        DerivedClass derivedObj = new DerivedClass(3, 5);
+        Console.WriteLine(derivedObj[0]);
+        Console.WriteLine(derivedObj[1]);
+        Console.WriteLine(derivedObj.MyMethod(2));
 
         // Задание № 3
-        Line<int> line = new Line<int>(0, 0, 1, 1);
-        Console.WriteLine(line);
+        List<Person> peopleList = new List<Person>();
+        peopleList.Add(new Person("Alice", 25, Position.Student));
+        peopleList.Add(new Person("Bob", 35, Position.Teacher));
+
+        foreach (var person in peopleList)
+        {
+            Console.WriteLine(person);
+        }
     }
 }
