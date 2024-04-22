@@ -1,254 +1,102 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
-
-
-abstract class Издание
-{
-    public string Название { get; set; }
-    public string ФамилияАвтора { get; set; }
-
-    public abstract void ПоказатьИнформацию();
-    public abstract bool ПроверитьИскомое(string искомаяФамилия);
-}
-
-class Книга : Издание
-{
-    public int ГодИздания { get; set; }
-    public string Издательство { get; set; }
-
-    public override void ПоказатьИнформацию()
-    {
-        Console.WriteLine($"Книга: {Название}, Автор: {ФамилияАвтора}, Год издания: {ГодИздания}, Издательство: {Издательство}");
-    }
-
-    public override bool ПроверитьИскомое(string искомаяФамилия)
-    {
-        return ФамилияАвтора == искомаяФамилия;
-    }
-}
-
-class Статья : Издание
-{
-    public string НазваниеЖурнала { get; set; }
-    public int НомерЖурнала { get; set; }
-    public int ГодИздания { get; set; }
-
-    public override void ПоказатьИнформацию()
-    {
-        Console.WriteLine($"Статья: {Название}, Автор: {ФамилияАвтора}, Журнал: {НазваниеЖурнала}, Номер: {НомерЖурнала}, Год издания: {ГодИздания}");
-    }
-
-    public override bool ПроверитьИскомое(string искомаяФамилия)
-    {
-        return ФамилияАвтора == искомаяФамилия;
-    }
-}
-
-class ЭлектронныйРесурс : Издание
-{
-    public string Ссылка { get; set; }
-    public string Аннотация { get; set; }
-
-    public override void ПоказатьИнформацию()
-    {
-        Console.WriteLine($"Электронный ресурс: {Название}, Автор: {ФамилияАвтора}, Ссылка: {Ссылка}, Аннотация: {Аннотация}");
-    }
-
-    public override bool ПроверитьИскомое(string искомаяФамилия)
-    {
-        return ФамилияАвтора == искомаяФамилия;
-    }
-}
-
-abstract class BaseArray
-{
-    protected int[] array;
-
-    public BaseArray(int size)
-    {
-        array = new int[size];
-    }
-
-    public int Size => array.Length;
-
-    public abstract void DisplayArray();
-
-    public int this[int index]
-    {
-        get { return array[index]; }
-        set { array[index] = value; }
-    }
-}
-
-class DerivedArray : BaseArray
-{
-    public DerivedArray(int size) : base(size)
-    {
-    }
-
-    public override void DisplayArray()
-    {
-        Console.Write("Array elements: ");
-        foreach (var element in array)
-        {
-            Console.Write(element + " ");
-        }
-        Console.WriteLine();
-    }
-}
-
+﻿// Задание № 1
 using System;
 using System.Collections.Generic;
 
-abstract class Figure : IComparable<Figure>
+class Translator
 {
-    public abstract double CalculateArea();
-    public abstract double CalculatePerimeter();
-    public abstract void DisplayInfo();
+    private Dictionary<string, string> engToRus = new Dictionary<string, string>();
+    private Dictionary<string, string> rusToEng = new Dictionary<string, string>();
 
-    public int CompareTo(Figure other)
+    public void AddTranslation(string eng, string rus)
     {
-        return this.CalculateArea().CompareTo(other.CalculateArea());
+        engToRus[eng] = rus;
+        rusToEng[rus] = eng;
+    }
+
+    public string Translate(string word, bool isEngToRus)
+    {
+        if (isEngToRus && engToRus.ContainsKey(word))
+        {
+            return engToRus[word];
+        }
+        else if (!isEngToRus && rusToEng.ContainsKey(word))
+        {
+            return rusToEng[word];
+        }
+        return "Translation not found";
     }
 }
 
-class Rectangle : Figure
+// Задание № 2
+class Point2D<T>
 {
-    private double width;
-    private double height;
+    public T X { get; set; }
+    public T Y { get; set; }
 
-    public Rectangle(double width, double height)
+    public Point2D(T x, T y)
     {
-        this.width = width;
-        this.height = height;
+        X = x;
+        Y = y;
     }
 
-    public override double CalculateArea()
+    public override string ToString()
     {
-        return width * height;
-    }
-
-    public override double CalculatePerimeter()
-    {
-        return 2 * (width + height);
-    }
-
-    public override void DisplayInfo()
-    {
-        Console.WriteLine("Rectangle - Width: {0}, Height: {1}, Area: {2}, Perimeter: {3}",
-            width, height, CalculateArea(), CalculatePerimeter());
+        return $"({X}, {Y})";
     }
 }
 
-class Circle : Figure
+class Point3D : Point2D<int>
 {
-    private double radius;
+    public int Z { get; set; }
 
-    public Circle(double radius)
+    public Point3D(int x, int y, int z) : base(x, y)
     {
-        this.radius = radius;
-    }
-
-    public override double CalculateArea()
-    {
-        return Math.PI * radius * radius;
-    }
-
-    public override double CalculatePerimeter()
-    {
-        return 2 * Math.PI * radius;
-    }
-
-    public override void DisplayInfo()
-    {
-        Console.WriteLine("Circle - Radius: {0}, Area: {1}, Perimeter: {2}",
-            radius, CalculateArea(), CalculatePerimeter());
+        Z = z;
     }
 }
 
-class Triangle : Figure
+// Задание № 3
+class Line<T>
 {
-    private double sideA;
-    private double sideB;
-    private double sideC;
+    private Point2D<T> point1;
+    private Point2D<T> point2;
 
-    public Triangle(double sideA, double sideB, double sideC)
+    public Line(Point2D<T> p1, Point2D<T> p2)
     {
-        this.sideA = sideA;
-        this.sideB = sideB;
-        this.sideC = sideC;
+        point1 = p1;
+        point2 = p2;
     }
 
-    public override double CalculateArea()
+    public Line(T x1, T y1, T x2, T y2)
     {
-        double p = (sideA + sideB + sideC) / 2;
-        return Math.Sqrt(p * (p - sideA) * (p - sideB) * (p - sideC));
+        point1 = new Point2D<T>(x1, y1);
+        point2 = new Point2D<T>(x2, y2);
     }
 
-    public override double CalculatePerimeter()
+    public override string ToString()
     {
-        return sideA + sideB + sideC;
-    }
-
-    public override void DisplayInfo()
-    {
-        Console.WriteLine("Triangle - Side A: {0}, Side B: {1}, Side C: {2}, Area: {3}, Perimeter: {4}",
-            sideA, sideB, sideC, CalculateArea(), CalculatePerimeter());
+        return $"Line from {point1} to {point2}";
     }
 }
+
 class Program
 {
     static void Main()
     {
-        Console.Write("1 Задание");
-        Издание[] каталог = {
-            new Книга { Название = "Война и мир", ФамилияАвтора = "Толстой", ГодИздания = 1869, Издательство = "Издательство1" },
-            new Статья { Название = "Название статьи", ФамилияАвтора = "Автор статьи", НазваниеЖурнала = "Журнал1", НомерЖурнала = 1, ГодИздания = 2021 },
-            new ЭлектронныйРесурс { Название = "Название ресурса", ФамилияАвтора = "Автор ресурса", Ссылка = "ссылка1", Аннотация = "Аннотация1" }
-        };
+        // Задание № 1
+        Translator translator = new Translator();
+        translator.AddTranslation("Russia", "Россия");
+        translator.AddTranslation("USA", "США");
 
-        foreach (var издание in каталог)
-        {
-            издание.ПоказатьИнформацию();
-        }
+        Console.WriteLine(translator.Translate("Russia", true));
+        Console.WriteLine(translator.Translate("США", false));
 
-        string искомаяФамилия = "Толстой";
-        foreach (var издание in каталог)
-        {
-            if (издание.ПроверитьИскомое(искомаяФамилия))
-            {
-                Console.WriteLine($"Издание найдено: {издание.Название}");
-            }
-        }
-        Console.Write("2 Задание");
-        DerivedArray derivedArray = new DerivedArray(5);
+        // Задание № 2
+        Point3D point3D = new Point3D(1, 2, 3);
+        Console.WriteLine(point3D);
 
-        for (int i = 0; i < derivedArray.Size; i++)
-        {
-            derivedArray[i] = i * 10;
-        }
-
-        derivedArray.DisplayArray();
-
-
-        Console.WriteLine("Element at index 2: " + derivedArray[2]);
-        derivedArray[2] = 100;
-        Console.WriteLine("Element at index 2 after update: " + derivedArray[2]);
-        Console.Write("3 Задание");
-        List<Figure> figures = new List<Figure>
-        {
-            new Rectangle(5, 10),
-            new Circle(3),
-            new Triangle(3, 4, 5)
-        };
-
-        figures.Sort();
-
-        foreach (var figure in figures)
-        {
-            figure.DisplayInfo();
-        }
+        // Задание № 3
+        Line<int> line = new Line<int>(0, 0, 1, 1);
+        Console.WriteLine(line);
     }
 }
-
