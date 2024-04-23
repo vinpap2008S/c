@@ -1,124 +1,65 @@
 ﻿using System;
-// Задание № 1
-class GenericArray<T>
+using System.Linq;
+
+struct ArrayStructure
 {
-    private T[] array;
+    private int[] array;
 
-    public GenericArray(int size)
+    public ArrayStructure(int size)
     {
-        array = new T[size];
-    }
-
-    public void AddElement(int index, T element)
-    {
-        if (index >= 0 && index < array.Length)
+        array = new int[size];
+        Random random = new Random();
+        for (int i = 0; i < size; i++)
         {
-            array[index] = element;
+            array[i] = random.Next(1, 101); // случайные числа от 1 до 100
         }
     }
 
-    public void RemoveElement(int index)
+    public int GetMaxElement()
     {
-        if (index >= 0 && index < array.Length)
-        {
-            array[index] = default(T);
-        }
+        return array.Max();
     }
 
-    public T GetElement(int index)
+    public int GetMinElement()
     {
-        if (index >= 0 && index < array.Length)
-        {
-            return array[index];
-        }
-        return default(T);
+        return array.Min();
     }
 
-    public int GetLength()
+    public double GetAverage()
     {
-        return array.Length;
+        return array.Average();
     }
 }
 
-// Задание № 2
-using System;
-
-abstract class BaseClass
+struct TextStructure
 {
-    protected int field1;
-    protected int field2;
+    public string text;
 
-    public BaseClass(int f1, int f2)
+    public CharStructure GetCharAtIndex(int index)
     {
-        field1 = f1;
-        field2 = f2;
-    }
-
-    public abstract int this[int index] { get; }
-
-}
-
-interface IMyInterface
-{
-    int MyMethod(int arg);
-}
-
-class DerivedClass : BaseClass, IMyInterface
-{
-    public DerivedClass(int f1, int f2) : base(f1, f2)
-    {
-    }
-
-    public override int this[int index]
-    {
-        get
-        {
-            if (index % 2 == 0)
-            {
-                return field1;
-            }
-            else
-            {
-                return field2;
-            }
-        }
-    }
-
-    public int MyMethod(int arg)
-    {
-        return (field1 + field2) * arg;
+        char character = text.Length > index ? text[index] : ' ';
+        return new CharStructure() { character = character };
     }
 }
 
-// Задание № 3
-
-using System;
-using System.Collections.Generic;
-
-enum Position
+struct CharStructure
 {
-    Student,
-    Teacher,
-    DepartmentHead,
-    Staff
+    public char character;
 }
 
-class Person
+struct FirstStructure
 {
-    public string Name { get; set; }
-    public int Age { get; set; }
-    public Position Position { get; set; }
+    public int num;
+}
 
-    public Person(string name, int age, Position position)
-    {
-        Name = name;
-        Age = age;
-        Position = position;
-    }
+struct SecondStructure
+{
+    public int num1;
+    public int num2;
 
-    public override string ToString()
+    public FirstStructure[] GetArrayOfFirstStructs()
     {
-        return $"Name: {Name}, Age: {Age}, Position: {Position}";
+        return new FirstStructure[] { new FirstStructure() { num = num1 }, new FirstStructure() { num = num2 } };
     }
 }
 
@@ -126,27 +67,29 @@ class Program
 {
     static void Main()
     {
-        // Задание № 1
-        GenericArray<int> intArray = new GenericArray<int>(5);
-        intArray.AddElement(0, 10);
-        intArray.AddElement(1, 20);
-        Console.WriteLine(intArray.GetElement(0));
-        Console.WriteLine(intArray.GetLength());
-
-        // Задание № 2
-        DerivedClass derivedObj = new DerivedClass(3, 5);
-        Console.WriteLine(derivedObj[0]);
-        Console.WriteLine(derivedObj[1]);
-        Console.WriteLine(derivedObj.MyMethod(2));
-
-        // Задание № 3
-        List<Person> peopleList = new List<Person>();
-        peopleList.Add(new Person("Alice", 25, Position.Student));
-        peopleList.Add(new Person("Bob", 35, Position.Teacher));
-
-        foreach (var person in peopleList)
+        // Задание 1
+        ArrayStructure arrayStruct = new ArrayStructure(5);
+        Console.WriteLine("Массив:");
+        foreach (int num in arrayStruct.array)
         {
-            Console.WriteLine(person);
+            Console.Write(num + " ");
         }
+        Console.WriteLine();
+        Console.WriteLine("Наибольший элемент в массиве: " + arrayStruct.GetMaxElement());
+        Console.WriteLine("Наименьший элемент в массиве: " + arrayStruct.GetMinElement());
+        Console.WriteLine("Среднее значение элементов в массиве: " + arrayStruct.GetAverage());
+
+        // Задание 2
+        TextStructure textStruct = new TextStructure() { text = "Hello" };
+        CharStructure charResult = textStruct.GetCharAtIndex(2);
+        Console.WriteLine("Символ по индексу 2 в тексте: " + charResult.character);
+
+        // Задание 3
+        FirstStructure firstStruct1 = new FirstStructure() { num = 5 };
+        FirstStructure firstStruct2 = new FirstStructure() { num = 10 };
+        SecondStructure resultStruct = new SecondStructure() { num1 = firstStruct1.num + firstStruct2.num, num2 = firstStruct1.num + firstStruct2.num };
+        Console.WriteLine("Сумма двух экземпляров первой структуры: " + resultStruct.num1 + " " + resultStruct.num2);
+        FirstStructure[] arrayOfFirstStructs = resultStruct.GetArrayOfFirstStructs();
+        Console.WriteLine("Массив из двух экземпляров первой структуры: " + arrayOfFirstStructs[0].num + " " + arrayOfFirstStructs[1].num);
     }
 }
