@@ -1,79 +1,94 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+
+public abstract class Car
+{
+    public string Name { get; set; }
+    public int Position { get; set; }
+    public int Speed { get; set; }
+    public event EventHandler<string> RaceFinished;
+
+    public Car(string name)
+    {
+        Name = name;
+        Position = 0;
+        Speed = 0;
+    }
+
+    public abstract void Drive();
+
+    protected virtual void OnRaceFinished(string message)
+    {
+        RaceFinished?.Invoke(this, message);
+    }
+}
+
+public class SportsCar : Car
+{
+    public SportsCar(string name) : base(name) { }
+
+    public override void Drive()
+    {
+        Speed = new Random().Next(1, 20);
+        Position += Speed;
+        if (Position >= 100)
+        {
+            OnRaceFinished($"{Name} пришел к финишу!");
+        }
+    }
+}
+
+public class PassengerCar : Car
+{
+    public PassengerCar(string name) : base(name) { }
+
+    public override void Drive()
+    {
+        Speed = new Random().Next(1, 15);
+        Position += Speed;
+        if (Position >= 100)
+        {
+            OnRaceFinished($"{Name} пришел к финишу!");
+        }
+    }
+}
+
+public class RaceGame
+{
+    public delegate void RaceHandler(object sender, string message);
+
+    public event RaceHandler RaceFinished;
+
+    public void StartRace(IEnumerable<Car> cars)
+    {
+        while (cars.Any(car => car.Position < 100))
+        {
+            foreach (var car in cars)
+            {
+                car.Drive();
+                Console.WriteLine($"{car.Name} на позиции {car.Position}");
+            }
+        }
+
+        var winner = cars.OrderByDescending(car => car.Position).First();
+        RaceFinished?.Invoke(this, $"{winner.Name} победил в гонке!");
+    }
+}
 
 class Program
 {
     static void Main()
     {
-        var clients = new[]
-        {
-            new { Month = 1, Year = 2022, ClientCode = 1, Duration = 5 },
-            new { Month = 2, Year = 2022, ClientCode = 2, Duration = 7 },
-            new { Month = 3, Year = 2022, ClientCode = 3, Duration = 9 }
-        };
+        RaceGame race = new RaceGame();
 
-        var maxDurationClient = clients.OrderByDescending(c => c.Duration).ThenByDescending(c => c.Year).ThenByDescending(c => c.Month).First();
-        Console.WriteLine($"Максимальная продолжительность занятий: {maxDurationClient.Duration}, Год: {maxDurationClient.Year}, Месяц: {maxDurationClient.Month}");
+        SportsCar sportsCar = new SportsCar("Спортивный автомобиль");
+        PassengerCar passengerCar = new PassengerCar("Легковой автомобиль");
 
-        var applicants = new[]
-        {
-            new { Year = 2022, SchoolNumber = 1, LastName = "Иванов" },
-            new { Year = 2022, SchoolNumber = 2, LastName = "Петров" },
-            new { Year = 2023, SchoolNumber = 1, LastName = "Сидоров" }
-        };
+        sportsCar.RaceFinished += (sender, message) => Console.WriteLine(message);
+        passengerCar.RaceFinished += (sender, message) => Console.WriteLine(message);
+        race.RaceFinished += (sender, message) => Console.WriteLine(message);
 
-        var groupedApplicants = applicants.GroupBy(a => a.Year)
-                                          .Select(group => new { Year = group.Key, Count = group.Count() })
-                                          .OrderByDescending(g => g.Count)
-                                          .ThenBy(g => g.Year);
-
-        foreach (var group in groupedApplicants)
-        {
-            Console.WriteLine($"{group.Count} абитуриентов поступили в {group.Year} году");
-        }
-
-
-        var applicants = new[]
-        {
-            new { LastName = "Иванов", SchoolNumber = 1, Year = 2022 },
-            new { LastName = "Петров", SchoolNumber = 2, Year = 2022 },
-            new { LastName = "Сидоров", SchoolNumber = 1, Year = 2023 }
-        };
-
-        var maxApplicantsBySchool = applicants.GroupBy(a => a.SchoolNumber)
-                                              .Select(group => new { SchoolNumber = group.Key, Count = group.Count() })
-                                              .OrderByDescending(g => g.Count)
-                                              .First();
-
-        var maxApplicantsFromSchool = applicants.Where(a => a.SchoolNumber == maxApplicantsBySchool.SchoolNumber)
-                                                .OrderBy(a => a.SchoolNumber)
-                                                .ThenBy(a => a.LastName);
-
-        foreach (var applicant in maxApplicantsFromSchool)
-        {
-            Console.WriteLine($"{applicant.SchoolNumber} - {applicant.LastName}");
-        }
-
-        var students = new[]
-        {
-            new { FirstName = "Иван", LastName = "Иванов", Age = 20, AverageScore = 4.5 },
-            new { FirstName = "Петр", LastName = "Петров", Age = 21, AverageScore = 4.8 },
-            new { FirstName = "Сидор", LastName = "Сидоров", Age = 19, AverageScore = 4.2 }
-        };
-
-        var topStudent = students.OrderByDescending(s => s.AverageScore).First();
-        Console.WriteLine($"Студент с самым высоким средним баллом: {topStudent.FirstName} {topStudent.LastName}, Возраст: {topStudent.Age}, Средний балл: {topStudent.AverageScore}");
-
-
-        var numbers = new[] { 10, 20, 30, 40, 50 };
-        double sum = 0;
-
-        foreach (var number in numbers)
-        {
-            sum += number;
-        }
-
-        double average = sum / numbers.Length;
-        Console.WriteLine($"Среднее арифметическое чисел: {average}");
+        race.StartRace(new List<Car> { sportsCar, passengerCar });
     }
 }
