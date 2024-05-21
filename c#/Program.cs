@@ -7,140 +7,171 @@ class Program
     static void Main()
     {
         // 1
-        string fileName = "Day17.txt";
-
-        Console.WriteLine("Меню:");
-        Console.WriteLine("1. Создать новый файл и записать информацию");
-        Console.WriteLine("2. Открыть и прочитать файл");
-        Console.Write("Выберите действие (1 или 2): ");
-        string choice = Console.ReadLine();
-
-        switch (choice)
-        {
-            case "1":
-                CreateAndWriteToFile(fileName);
-                break;
-            case "2":
-                ReadAndProcessFile(fileName);
-                break;
-            default:
-                Console.WriteLine("Некорректный выбор.");
-                break;
-        }
-
-        // 2
-        string inputFileName = "input.txt";
-        string outputFileName = "OutputCode.cs";
-
-        if (!File.Exists(inputFileName))
-        {
-            Console.WriteLine("Файл с исходным кодом не найден.");
-            return;
-        }
-
-        string code = File.ReadAllText(inputFileName);
-
-        // Замена слов public на private и преобразование символов
-        code = code.Replace("public", "private");
-        code = TransformCode(code);
-
-        // Запись символов каждой строки в обратном порядке
-        string reversedCode = ReverseLines(code);
-
-        File.WriteAllText(outputFileName, reversedCode);
-        Console.WriteLine("Программа успешно обработана. Результат записан в файл 'OutputCode.cs'.");
-
-        // 3
-        fileName = "mytest.txt";
+        string fileName = "mytest.txt";
         string content = "Привет и добро пожаловать\nЭто первый контент\nтекстового файла mytest.txt";
 
         File.WriteAllText(fileName, content);
 
         Console.WriteLine("Файл, созданный с именем содержимого " + fileName);
 
-        // 4
+        // 2
 
         fileName = "mytest.txt";
-        fileName = "Привет и добро пожаловать\nЭто первый контент\nтекстового файла mytest.txt";
+        content = "Привет и добро пожаловать\nЭто первый контент\nтекстового файла mytest.txt";
 
         File.WriteAllText(fileName, content);
 
         Console.WriteLine("Вот содержимое файла " + fileName + ":");
         Console.WriteLine(File.ReadAllText(fileName));
+        // 3
 
-    }
-    static void CreateAndWriteToFile(string fileName)
-    {
-        if (File.Exists(fileName))
+        Console.Write("Введите количество строк для записи в файл: ");
+        int count = Convert.ToInt32(Console.ReadLine());
+
+        string[] lines = new string[count];
+        for (int i = 0; i < count; i++)
         {
-            Console.WriteLine("Файл с именем 'Day17.txt' уже существует.");
-            return;
+            Console.Write($"Строка ввода {i + 1}: ");
+            lines[i] = Console.ReadLine();
         }
 
-        double[,] doubleArray = { { 1.1, 2.2 }, { 3.3, 4.4 } };
-        int[,] intArray = { { 1, 2 }, { 3, 4 } };
-        string personalInfo = "Иванов Иван Иванович, 01.01.2000";
+        File.WriteAllLines("file.txt", lines);
 
-        string formattedInfo = $"Исходные данные: двумерный массив дробных чисел.\n{doubleArray.GetLength(0)} {doubleArray.GetLength(1)}";
-        foreach (var item in doubleArray)
-        {
-            formattedInfo += $"\n{item}";
-        }
-        formattedInfo += $"\n{intArray.GetLength(0)} {intArray.GetLength(1)}";
-        foreach (var item in intArray)
-        {
-            formattedInfo += $" {item}";
-        }
-        formattedInfo += $"\n{personalInfo}\nДата: {DateTime.Now}";
+        Console.WriteLine("Файл успешно создан и заполнен.");
 
-        File.WriteAllText(fileName, formattedInfo);
-        Console.WriteLine($"Информация успешно записана в файл '{fileName}'.");
-    }
-    static void ReadAndProcessFile(string fileName)
-    {
-        if (!File.Exists(fileName))
+        // 4
+        Console.Write("Введите строку, чтобы игнорировать строку: ");
+        string ignoreString = Console.ReadLine();
+
+        Console.Write("Введите количество строк для записи в файл: ");
+        count = Convert.ToInt32(Console.ReadLine());
+
+        lines = new string[count];
+        for (int i = 0; i < count; i++)
         {
-            Console.WriteLine("Файл 'Day17.txt' не найден.");
-            return;
+            Console.Write($"Строка ввода {i + 1}: ");
+            lines[i] = Console.ReadLine();
         }
 
-        string fileContent = File.ReadAllText(fileName);
-        Console.WriteLine("\nСодержимое файла 'Day17.txt':");
-        Console.WriteLine(fileContent);
-
-    }
-    static string TransformCode(string code)
-    {
-        StringBuilder sb = new StringBuilder();
-
-        bool inWord = false;
-        foreach (char c in code)
+        using (StreamWriter writer = new StreamWriter("file.txt"))
         {
-            if (char.IsLetter(c))
+            foreach (string line in lines)
             {
-                if (!inWord)
-                {
-                    inWord = true;
-                    sb.Append(char.ToUpper(c));
-                }
-                else
-                {
-                    sb.Append(c);
-                }
-            }
-            else
-            {
-                inWord = false;
-                sb.Append(c);
+                if (!line.Contains(ignoreString))
+                    writer.WriteLine(line);
             }
         }
 
-        return sb.ToString();
+        Console.WriteLine("Файл успешно создан и заполнен.");
+        // 5 
+        string filePath = "mytest.txt";
+
+        Console.WriteLine("Вот содержимое файла mytest.txt:");
+        Console.WriteLine("----------------------------------");
+        PrintFileContent(filePath);
+
+        Console.WriteLine("Введите текст для добавления в файл:");
+        string textToAdd = Console.ReadLine();
+
+        using (StreamWriter writer = File.AppendText(filePath))
+        {
+            writer.WriteLine(textToAdd);
+        }
+
+        Console.WriteLine("Вот содержимое файла после добавления текста:");
+        Console.WriteLine("----------------------------------");
+        PrintFileContent(filePath);
+
+        // 6
+        string sourceFilePath = "mytest.txt";
+        string destinationFilePath = "mynewtest.txt";
+
+        Console.WriteLine("Вот содержимое файла mytest.txt:");
+        Console.WriteLine("----------------------------------");
+        PrintFileContent(sourceFilePath);
+
+        File.Copy(sourceFilePath, destinationFilePath);
+
+        Console.WriteLine("Файл mytest.txt успешно скопирован с именем mynewtest.txt в том же каталоге.");
+
+        Console.WriteLine("Вот содержимое файла mynewtest.txt:");
+        Console.WriteLine("----------------------------------");
+        PrintFileContent(destinationFilePath);
+
+        // 7
+
+        sourceFilePath = "mytest.txt";
+        destinationFilePath = "mynewtest.txt";
+
+        File.WriteAllText(sourceFilePath, "Привет и добро пожаловать\nЭто первый контент\nтекстового файла mytest.txt");
+
+        File.Move(sourceFilePath, destinationFilePath);
+
+        Console.WriteLine($"Файл {sourceFilePath} успешно перемещен под именем {destinationFilePath} в том же каталоге.");
+
+        Console.WriteLine($"Вот содержимое файла {sourceFilePath}:");
+        Console.WriteLine(File.ReadAllText(destinationFilePath));
+
+        Console.WriteLine($"Вот содержимое файла {destinationFilePath}:");
+        Console.WriteLine(File.ReadAllText(destinationFilePath));
+
+        // 8
+
+        Console.Write("Введите количество строк для записи в файл: ");
+        count = Convert.ToInt32(Console.ReadLine());
+
+        lines = new string[count];
+        for (int i = 0; i < count; i++)
+        {
+            Console.Write($"Строка ввода {i + 1}: ");
+            lines[i] = Console.ReadLine();
+        }
+
+        File.WriteAllLines("file.txt", lines);
+
+        Console.WriteLine("Файл успешно создан и заполнен.");
+
+        Console.WriteLine("Последние n строк файла:");
+        int n = 3; // Число строк, которые нужно прочитать
+        List<string> lastLines = ReadLastLines("file.txt", n);
+        foreach (string line in lastLines)
+        {
+            Console.WriteLine(line);
+        }
     }
-    static string ReverseLines(string code)
+    static void PrintFileContent(string filePath)
     {
-        string[] lines = code.Split('\n');
-        Array.Reverse(lines);
-        return string.Join("", lines);
+        using (StreamReader reader = new StreamReader(filePath))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                Console.WriteLine(line);
+            }
+        }
+    }
+    static List<string> ReadLastLines(string filePath, int n)
+    {
+        List<string> lines = new List<string>();
+
+        using (StreamReader reader = new StreamReader(filePath))
+        {
+            Queue<string> queue = new Queue<string>(n);
+
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                if (queue.Count == n)
+                {
+                    queue.Dequeue();
+                }
+                queue.Enqueue(line);
+            }
+
+            lines.AddRange(queue);
+        }
+
+        return lines;
     }
 }
+
