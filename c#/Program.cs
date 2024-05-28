@@ -114,7 +114,6 @@ class Program
 
         Console.WriteLine($"Вот содержимое файла {destinationFilePath}:");
         Console.WriteLine(File.ReadAllText(destinationFilePath));
-
         // 8
 
         Console.Write("Введите количество строк для записи в файл: ");
