@@ -1,86 +1,37 @@
-﻿namespace ClassLib
+﻿using System;
+
+namespace ClassLib
 {
+    [Serializable]
     public class PC
     {
-        // Поля
-        public int id;
-        public string name;
-        public int price;
-        private bool isTurnedOn;
+        public string Brand { get; set; }
+        public string SerialNumber { get; set; }
 
-        // Свойства
-        public string Id
-        {
-            get { return Id; }
-            set { Id = value; }
-        }
-
-        public int Name
-        {
-            get { return Name; }
-            set { Name = value; }
-        }
-
-        public bool Price
-        {
-            get { return Price; }
-        }
-
-        // Конструкторы
         public PC()
         {
-            id = 0;
-            name = "";
-            price = 0;
-            isTurnedOn = false;
+            // Конструктор по умолчанию
         }
 
-        public PC(int id, string name, int price)
+        public PC(string brand, string serialNumber)
         {
-            this.id = id;
-            this.name = name;
-            this.price = price;
+            Brand = brand;
+            SerialNumber = serialNumber;
         }
 
-        // Методы
         public void TurnOn()
         {
-            if (!isTurnedOn)
-            {
-                isTurnedOn = true;
-                Console.WriteLine("The PC is turned on.");
-            }
-            else
-            {
-                Console.WriteLine("The PC is already turned on.");
-            }
+            Console.WriteLine("Компьютер включен");
         }
 
         public void TurnOff()
         {
-            if (isTurnedOn)
-            {
-                isTurnedOn = false;
-                Console.WriteLine("The PC is turned off.");
-            }
-            else
-            {
-                Console.WriteLine("The PC is already turned off.");
-            }
+            Console.WriteLine("Компьютер выключен");
         }
 
-        public void Overload()
+        public override string ToString()
         {
-            if (isTurnedOn)
-            {
-                Console.WriteLine("The PC is overloaded. Restarting...");
-                TurnOff();
-                TurnOn();
-            }
-            else
-            {
-                Console.WriteLine("The PC is turned off. Cannot overload.");
-            }
+            return $"Марка: {Brand}, Серийный номер: {SerialNumber}";
         }
     }
 }

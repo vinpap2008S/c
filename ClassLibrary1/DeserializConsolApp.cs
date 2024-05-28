@@ -1,25 +1,31 @@
-﻿using System.Collections.ObjectModel;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using ClassLib;
 
-class Program
+namespace DeserializConsolApp
 {
-    static void Main(string[] args)
+    class Program
     {
-        // Путь к файлу с сериализованной коллекцией
-        string filePath = "SerializedCollection.json";
-
-        // Прочитать сериализованную коллекцию из файла
-        string jsonString = File.ReadAllText(filePath);
-
-        // Десериализовать коллекцию в объект Collection<T>
-        Collection<char> deserializedCollection = JsonSerializer.Deserialize<Collection<char>>(jsonString);
-
-        // Вывести имена людей в коллекции на экран
-        foreach (char person in deserializedCollection)
+        static void Main()
         {
-            Console.WriteLine(person);
+            string filePath = @"D:\listSerial.txt";
+
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                List<PC> pcs = JsonSerializer.Deserialize<List<PC>>(json);
+
+                foreach (PC pc in pcs)
+                {
+                    Console.WriteLine(pc);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Файл не найден");
+            }
         }
     }
 }
